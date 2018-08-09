@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="webservice/restjson/db" VERSION="20180807" COMMENT="XMLDB file for Moodle webservice/restjson"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="restjson_log" COMMENT="Logging all webservice request for this protocol">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="functionname"/>
+        <FIELD NAME="functionname" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Function name of the request" PREVIOUS="id" NEXT="parameters"/>
+        <FIELD NAME="parameters" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Paramenters of the function call" PREVIOUS="functionname" NEXT="response"/>
+        <FIELD NAME="response" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Response of the request" PREVIOUS="parameters" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Time the record is called" PREVIOUS="response"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

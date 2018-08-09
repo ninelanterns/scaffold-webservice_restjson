@@ -158,6 +158,7 @@ class webservice_restjson_server extends webservice_base_server {
         }
 
         $this->send_headers();
+        $this->log_requests($response);
         echo $response;
     }
 
@@ -170,7 +171,9 @@ class webservice_restjson_server extends webservice_base_server {
      */
     protected function send_error($ex=null) {
         $this->send_headers();
-        echo $this->generate_error($ex);
+        $error = $this->generate_error($ex);
+        $this->log_requests($error);
+        echo $error;
     }
 
     /**
@@ -261,6 +264,17 @@ class webservice_restjson_server extends webservice_base_server {
             $single .= '</SINGLE>'."\n";
             return $single;
         }
+    }
+
+    protected function log_requests($response) {
+        global $DB;
+        $record = (object) array(
+            'functionname' => $this->functionname,
+            'parameters' => $this->parameters ? json_encode($this->parameters) : '',
+            'response'   => $response,
+            'timecreated' => time(),
+        );
+        $DB->insert_record('restjson_log', $record);
     }
 }
 
