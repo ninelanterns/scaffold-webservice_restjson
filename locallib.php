@@ -36,6 +36,7 @@ class webservice_restjson_server extends webservice_base_server {
 
     /** @var string return method ('xml' or 'json') */
     protected $restformat;
+    private $log_request_id = 0;
 
     /**
      * Contructor
@@ -124,6 +125,8 @@ class webservice_restjson_server extends webservice_base_server {
 
             $this->parameters = $methodvariables;
         }
+
+        $this->log_requests();
     }
 
     /**
@@ -158,7 +161,7 @@ class webservice_restjson_server extends webservice_base_server {
         }
 
         $this->send_headers();
-        $this->log_requests($response);
+        $this->log_requests($this->log_request_id, $response);
         echo $response;
     }
 
@@ -266,15 +269,20 @@ class webservice_restjson_server extends webservice_base_server {
         }
     }
 
-    protected function log_requests($response) {
+    protected function log_requests($response=null) {
         global $DB;
         $record = (object) array(
+            'id' => $this->log_request_id,
             'functionname' => $this->functionname,
             'parameters' => $this->parameters ? json_encode($this->parameters) : '',
-            'response'   => $response,
+            'response'   => $response ? $response : '',
             'timecreated' => time(),
         );
-        $DB->insert_record('restjson_log', $record);
+        if ($record->id) {
+            $DB->update_record('restjson_log', $record);
+        } else {
+            $this->log_request_id = $DB->insert_record('restjson_log', $record);
+        }
     }
 }
 
