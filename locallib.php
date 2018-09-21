@@ -161,7 +161,7 @@ class webservice_restjson_server extends webservice_base_server {
         }
 
         $this->send_headers();
-        $this->log_requests($this->log_request_id, $response);
+        $this->log_requests($response);
         echo $response;
     }
 
